@@ -170,12 +170,20 @@ st.markdown("""
 }
 </style>
 """, unsafe_allow_html=True)
+from pathlib import Path
 
 @st.cache_data
 def load_data():
-    """Load and cache the diabetes dataset"""
-    data = pd.read_csv('data/diabetes_data.csv')
+    BASE_DIR = Path(__file__).resolve().parent
+    DATA_PATH = BASE_DIR / "diabetes_data.csv"
+
+    if not DATA_PATH.exists():
+        st.error(f"Dataset not found at: {DATA_PATH}")
+        st.stop()
+
+    data = pd.read_csv(DATA_PATH)
     return data
+
 
 @st.cache_data
 def prepare_ml_models(X, y):
